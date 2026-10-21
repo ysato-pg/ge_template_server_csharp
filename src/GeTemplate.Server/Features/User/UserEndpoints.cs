@@ -16,8 +16,5 @@ public static class UserEndpoints
 
         group.MapPost("/fetch", (HttpContext context, UserService service) =>
             service.Fetch(SessionAuth.GetSessionUser(context)));
-
-        group.MapPost("/add-play-count", (HttpContext context, UserService service, CancellationToken cancellationToken) =>
-            service.AddPlayCountAsync(SessionAuth.GetSessionUser(context), cancellationToken));
     }
 }

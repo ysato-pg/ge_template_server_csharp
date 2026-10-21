@@ -1,6 +1,9 @@
 using GeTemplate.Server.Account;
 using GeTemplate.Server.Common;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using GeTemplate.Server.Data;
+using GeTemplate.Server.InGame;
 using GeTemplate.Server.User;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +15,10 @@ builder.Services.AddDbContext<GameDbContext>(options =>
 builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddScoped<AccountService>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<InGameService>();
+// enum（PlayResult）は camelCase の文字列にする。数値は受け付けない。
+builder.Services.ConfigureHttpJsonOptions(options =>
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase, allowIntegerValues: false)));
 
 var app = builder.Build();
 
@@ -24,6 +31,7 @@ using (var scope = app.Services.CreateScope())
 app.UseApiErrorHandling();
 app.MapAccountEndpoints();
 app.MapUserEndpoints();
+app.MapInGameEndpoints();
 
 app.Run();
 

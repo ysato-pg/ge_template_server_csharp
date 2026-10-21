@@ -45,6 +45,32 @@ public sealed class JsonShapeTests : ServerTestBase
     }
 
     [Fact]
+    public async Task StartInGame_HasDesignedProperties()
+    {
+        var (_, _, session) = await Server.CreateAccountAsync();
+
+        var json = await Server.PostAsync("/api/ingame/start", new { gameId = "sample" }, session);
+
+        AssertProperties(json, "playId", "user");
+        Assert.Equal(JsonValueKind.String, json.GetProperty("playId").ValueKind);
+    }
+
+    [Fact]
+    public async Task EndInGame_HasDesignedProperties()
+    {
+        var (_, _, session) = await Server.CreateAccountAsync();
+        var playId = (await Server.PostAsync("/api/ingame/start", new { gameId = "sample" }, session)).GetProperty("playId").GetString();
+
+        // 設計書（F003）の JSON 例と同じ形のリクエスト。
+        var json = await Server.PostRawAsync("/api/ingame/end",
+            $$"""{ "playId": "{{playId}}", "gameId": "sample", "result": "clear", "score": 120 }""", 200, session);
+
+        AssertProperties(json, "gameId", "highScore", "isNewHighScore");
+        Assert.Equal(JsonValueKind.Number, json.GetProperty("highScore").ValueKind);
+        Assert.Equal(JsonValueKind.True, json.GetProperty("isNewHighScore").ValueKind);
+    }
+
+    [Fact]
     public async Task Error_HasDesignedProperties()
     {
         var json = await Server.PostAsync("/api/user/fetch", expectedStatus: 401);

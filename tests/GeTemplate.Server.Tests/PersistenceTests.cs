@@ -9,7 +9,7 @@ public sealed class PersistenceTests : ServerTestBase
     public async Task AfterRestart_CanLoginAndPlayCountIsKept()
     {
         var (userId, authToken, session) = await Server.CreateAccountAsync();
-        await Server.PostAsync("/api/user/add-play-count", sessionToken: session);
+        await Server.PostAsync("/api/ingame/start", new { gameId = "sample" }, session);
 
         RestartServer();
 

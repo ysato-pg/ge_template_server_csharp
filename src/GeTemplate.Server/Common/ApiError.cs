@@ -13,5 +13,6 @@ public static class ApiErrorCodes
     public const string InvalidRequest = nameof(InvalidRequest);
     public const string InvalidCredentials = nameof(InvalidCredentials);
     public const string InvalidSession = nameof(InvalidSession);
+    public const string InvalidPlay = nameof(InvalidPlay);
     public const string InternalError = nameof(InternalError);
 }

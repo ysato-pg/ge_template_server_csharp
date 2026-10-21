@@ -23,4 +23,10 @@ public sealed class User
 
     /// <summary>現在のセッショントークン。ログインのたびに置き換わる。</summary>
     public string? SessionToken { get; set; }
+
+    /// <summary>進行中のプレイのプレイ ID。インゲーム終了で NULL に戻る。</summary>
+    public string? CurrentPlayId { get; set; }
+
+    /// <summary>進行中のプレイのゲーム ID。</summary>
+    public string? CurrentPlayGameId { get; set; }
 }

@@ -62,11 +62,19 @@ public sealed class TestServer : WebApplicationFactory<Program>
         return JsonDocument.Parse(text).RootElement.Clone();
     }
 
-    public async Task<JsonElement> PostRawAsync(string path, string json, int expectedStatus)
+    public async Task<JsonElement> PostRawAsync(string path, string json, int expectedStatus, string? sessionToken = null)
     {
         using var client = CreateClient();
-        using var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-        using var response = await client.PostAsync(path, content);
+        using var request = new HttpRequestMessage(HttpMethod.Post, path)
+        {
+            Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json"),
+        };
+        if (sessionToken is not null)
+        {
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", sessionToken);
+        }
+
+        using var response = await client.SendAsync(request);
         var text = await response.Content.ReadAsStringAsync();
         Assert.True((int)response.StatusCode == expectedStatus, $"HTTP {(int)response.StatusCode}（期待値 {expectedStatus}）: {text}");
         return JsonDocument.Parse(text).RootElement.Clone();

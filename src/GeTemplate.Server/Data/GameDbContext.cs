@@ -9,6 +9,7 @@ namespace GeTemplate.Server.Data;
 public sealed class GameDbContext(DbContextOptions<GameDbContext> options) : DbContext(options)
 {
     public DbSet<User> Users => Set<User>();
+    public DbSet<HighScore> HighScores => Set<HighScore>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -23,6 +24,13 @@ public sealed class GameDbContext(DbContextOptions<GameDbContext> options) : DbC
             user.Property(u => u.CreatedAt).HasConversion(utc);
             user.Property(u => u.LastLoginAt).HasConversion(utc);
             user.HasIndex(u => u.SessionToken).IsUnique();
+        });
+
+        modelBuilder.Entity<HighScore>(highScore =>
+        {
+            highScore.HasKey(h => new { h.UserId, h.GameId });
+            highScore.HasOne<User>().WithMany().HasForeignKey(h => h.UserId);
+            highScore.Property(h => h.UpdatedAt).HasConversion(utc);
         });
     }
 }

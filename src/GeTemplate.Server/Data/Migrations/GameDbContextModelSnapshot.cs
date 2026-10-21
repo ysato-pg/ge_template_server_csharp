@@ -17,6 +17,25 @@ namespace GeTemplate.Server.Data.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.13");
 
+            modelBuilder.Entity("GeTemplate.Server.Data.HighScore", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("GameId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Score")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("UserId", "GameId");
+
+                    b.ToTable("HighScores");
+                });
+
             modelBuilder.Entity("GeTemplate.Server.Data.User", b =>
                 {
                     b.Property<string>("Id")
@@ -27,6 +46,12 @@ namespace GeTemplate.Server.Data.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CurrentPlayGameId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CurrentPlayId")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("LastLoginAt")
@@ -48,6 +73,15 @@ namespace GeTemplate.Server.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("GeTemplate.Server.Data.HighScore", b =>
+                {
+                    b.HasOne("GeTemplate.Server.Data.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

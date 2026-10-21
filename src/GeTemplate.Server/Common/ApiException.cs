@@ -16,6 +16,9 @@ public sealed class ApiException(int statusCode, string errorCode, string messag
 
     public static ApiException InvalidSession() =>
         new(StatusCodes.Status401Unauthorized, ApiErrorCodes.InvalidSession, "セッショントークンが無いか、正しくありません。");
+
+    public static ApiException InvalidPlay() =>
+        new(StatusCodes.Status409Conflict, ApiErrorCodes.InvalidPlay, "進行中のインゲームと一致しません（開始していない・終了済み・置き換え済み）。");
 }
 
 /// <summary>
